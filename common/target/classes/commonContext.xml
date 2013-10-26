@@ -1,0 +1,53 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:aop="http://www.springframework.org/schema/aop"
+xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd 
+http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd 
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+  <mongo:mongo host="@MONGOHOST@" port="@MONGOPORT@" />
+
+  <mongo:db-factory dbname="@MONGODB@" mongo-ref="mongo"/>
+  
+  <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:configLocation="classpath:ehcache.xml"/>  
+  <bean id="gosoCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean" p:cacheManager-ref="cacheManager" p:cacheName="gosoCache"/>
+
+  <bean id="gosodb" class="org.springframework.data.mongodb.core.MongoTemplate">
+    <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
+  </bean>
+  
+  <bean id="masterdao" abstract="true">
+    <property name="gosomongo" ref="gosodb"/>
+  </bean>
+  
+  <bean id="logindao" class="com.gosociety.server.common.dao.impl.LoginDaoImpl" parent="masterdao"/>
+  
+  <bean id="signupdao" class="com.gosociety.server.common.dao.impl.SignUpDaoImpl" parent="masterdao"/>
+  
+  <bean id="societyscreendao" class="com.gosociety.server.common.dao.impl.SocietyScreenDaoImpl" parent="masterdao"/>
+  
+  <bean id="scenescreendao" class="com.gosociety.server.common.dao.impl.SceneScreenDaoImpl" parent="masterdao"/>
+  
+  <bean id="eventdetailsdao" class="com.gosociety.server.common.dao.impl.EventDetailsDaoImpl" parent="masterdao"/>
+  
+  <bean id="recommendationdao" class="com.gosociety.server.common.dao.impl.RecommendationDaoImpl" parent="masterdao"/>
+  
+  <bean id="initSocieties" class="com.gosociety.server.common.dao.impl.SocietiesDaoImpl" lazy-init="false" init-method="init" parent="masterdao"/>
+  
+  <bean id="placesDao" class="com.gosociety.server.common.dao.impl.PlacesDaoImpl" parent="masterdao"/>
+  
+  <bean id="checkInDao" class="com.gosociety.server.common.dao.impl.CheckInDaoImpl" parent="masterdao"/>
+  
+  <bean id="userDao" class="com.gosociety.server.common.dao.impl.UserDaoImpl" parent="masterdao"/>
+  
+  <bean id="httpclient" class="com.gosociety.server.common.util.GoSoHttpClient"/>
+  
+  <aop:aspectj-autoproxy/>
+  <context:component-scan base-package="com.gosociety.server.common" />
+</beans>

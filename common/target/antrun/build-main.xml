@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="main"  >
+<target name="main">
+  <echo>localhost</echo>
+  <replace token="@MONGOHOST@" file="/Users/Praveen/Documents/GoSociety/gosociety_server/common/target/classes/commonContext.xml" value="localhost"/>
+  <replace token="@MONGOPORT@" file="/Users/Praveen/Documents/GoSociety/gosociety_server/common/target/classes/commonContext.xml" value="27017"/>
+  <replace token="@MONGODB@" file="/Users/Praveen/Documents/GoSociety/gosociety_server/common/target/classes/commonContext.xml" value="gosodb"/>
+</target>
+</project>
